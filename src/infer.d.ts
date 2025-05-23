@@ -105,7 +105,9 @@ type InferCustomSanitizer<TParam extends ParamSchema> = TParam extends {
 
 type InferCustom<TParam extends ParamSchema> = TParam extends {
   custom: {
-    options: (arg0: any, ...args: any) => asserts arg0 is infer T;
+    options: 
+      | ((arg0: any, ...args: any) => asserts arg0 is infer T)
+      | ((arg0: any, ...args: any) => arg0 is infer T);
   };
 }
   ? T
@@ -186,6 +188,6 @@ type InferSchema<TSchema extends Schema> = {
 /**
  * @todo Refactor this so we can have object as optional
  */
-export type Infer<TSchema extends Schema> = IntersectRecursive<
-  InferSchema<TSchema>
+export type Infer<TSchema extends Schema> = Prettify<
+  IntersectRecursive<InferSchema<TSchema>>
 >;

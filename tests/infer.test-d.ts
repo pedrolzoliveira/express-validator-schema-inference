@@ -65,29 +65,39 @@ describe('Infer', () => {
       ISO4217: { isISO4217: true },
       ISO8601: { isISO8601: true },
       object: { isObject: true },
-      custom: {
+      customAssertsSingleArg: {
         custom: {
           options: (value: unknown): asserts value is string => {
             if (typeof value !== 'string') {
-              throw new Error('Not a string');
+              throw new TypeError();
             }
           },
         },
       },
-      customWithMoreParameters: {
+      customAssertsMultiArg: {
         custom: {
           options: (value: unknown, _meta): asserts value is string => {
             if (typeof value !== 'string') {
-              throw new Error('Not a string');
+              throw new TypeError();
             }
           },
         },
       },
-      customWithoutAssert: {
+      customPredicateSingleArg: {
         custom: {
-          options: (value: unknown) => typeof value === 'string',
+          options: (value: unknown): value is string => typeof value === 'string',
         },
       },
+      customPredicateMultiArg: {
+        custom: {
+          options: (value: unknown, _meta): value is string => typeof value === 'string',
+        },
+      },
+      customNoInference: {
+        custom: {
+          options: () => {},
+        }
+      }
     } satisfies Schema;
 
     expectTypeOf({} as Infer<typeof schema>).toEqualTypeOf<{
@@ -111,9 +121,11 @@ describe('Infer', () => {
       ISO4217: string | string[];
       ISO8601: string | string[];
       object: {};
-      custom: string;
-      customWithMoreParameters: string;
-      customWithoutAssert: unknown;
+      customAssertsSingleArg: string;
+      customAssertsMultiArg: string;
+      customPredicateSingleArg: string;
+      customPredicateMultiArg: string;
+      customNoInference: unknown;
     }>({} as any);
   });
 
