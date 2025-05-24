@@ -3,10 +3,8 @@ import type {
   ExtractArrayType,
   TypeOrUnknown,
   HasKey,
-  Prettify,
   UnionToIntersection,
-  Prettify,
-  Prettify2,
+  Prettify
 } from './utils';
 
 /**

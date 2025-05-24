@@ -26,7 +26,3 @@ export type UnionToTuple<T> = UnionToIntersection<
 > extends (_: never) => infer W
   ? [...UnionToTuple<Exclude<T, W>>, W]
   : [];
-
-export type AssertedType<T> = T extends (x: any) => asserts x is infer R
-  ? R
-  : never;
