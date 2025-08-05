@@ -6,6 +6,12 @@ export type Prettify<T> = {
   ? A
   : never;
 
+export type PrettifyRecursive<T> = {
+  [K in keyof T]: T[K] extends object ? PrettifyRecursive<T[K]> : T[K];
+} extends infer A
+  ? A
+  : never;
+
 export type ExtractArrayType<T> = T extends Array<infer U> ? U : never;
 
 export type TypeOrUnknown<T> = [T] extends [never] ? unknown : T;
@@ -26,3 +32,15 @@ export type UnionToTuple<T> = UnionToIntersection<
 > extends (_: never) => infer W
   ? [...UnionToTuple<Exclude<T, W>>, W]
   : [];
+
+export type IntersectRecursive<T> = {
+  [K in keyof T]: T[K] extends Function
+    ? T[K]
+    : [T[K]] extends [never]
+    ? never
+    : T[K] extends object
+    ? UnionToIntersection<IntersectRecursive<T[K]>>
+    : T[K];
+} extends infer A
+  ? A
+  : never;

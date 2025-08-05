@@ -1,15 +1,8 @@
 import type { Schema, ParamSchema } from 'express-validator';
-import type {
-  ExtractArrayType,
-  TypeOrUnknown,
-  HasKey,
-  UnionToIntersection,
-  Prettify
-} from './utils';
+import type { MakeSchemaTree, SchemaTree } from './tree';
+import type { TypeOrUnknown, HasKey, PrettifyRecursive } from './utils';
 
-/**
- * @todo Add missing Sanitizers `blacklist`, `whitelist`, `normalizeEmail`
- */
+/** @todo Add missing Sanitizers `blacklist`, `whitelist`, `normalizeEmail` */
 type SanitizersMap = {
   toBoolean: boolean;
   toDate: Date;
@@ -28,29 +21,27 @@ type InferSanitizer<TParam extends ParamSchema> = {
   [K in keyof TParam]: K extends keyof SanitizersMap ? SanitizersMap[K] : never;
 }[keyof TParam];
 
-/**
- * @todo Add missing validators, take a look at `node_modules/express-validator/lib/chain/validators.d.ts`
- */
+/** @todo Add missing validators, take a look at `node_modules/express-validator/lib/chain/validators.d.ts` */
 type ValidatorsMap = {
-  isBoolean: boolean | boolean[];
-  isDate: Date | Date[];
-  isFloat: number | number[];
-  isInt: number | number[];
-  isString: string | string[];
-  isULID: string | string[];
-  isAlpha: string | string[];
-  isAlphanumeric: string | string[];
-  isAscii: string | string[];
-  isBase32: string | string[];
-  isBase58: string | string[];
-  isBase64: string | string[];
-  isBtcAddress: string | string[];
-  isCreditCard: string | string[];
-  isCurrency: string | string[];
-  isEmail: string | string[];
-  isISO6346: string | string[];
-  isISO4217: string | string[];
-  isISO8601: string | string[];
+  isBoolean: boolean;
+  isDate: Date;
+  isFloat: number;
+  isInt: number;
+  isString: string;
+  isULID: string;
+  isAlpha: string;
+  isAlphanumeric: string;
+  isAscii: string;
+  isBase32: string;
+  isBase58: string;
+  isBase64: string;
+  isBtcAddress: string;
+  isCreditCard: string;
+  isCurrency: string;
+  isEmail: string;
+  isISO6346: string;
+  isISO4217: string;
+  isISO8601: string;
   isObject: {};
 };
 
@@ -60,38 +51,11 @@ type InferValidator<TParam extends ParamSchema> = {
 
 type ArrayKeys = 'isArray' | 'toArray';
 
-type InferArray<TParam extends ParamSchema> = Array<
-  TypeOrUnknown<ExtractArrayType<InferParam<Omit<TParam, ArrayKeys>>>>
->;
-
-type DefaultOrOptionalKeys = 'optional' | 'default';
-
-type OptionalValueMap = {
-  undefined: undefined;
-  null: null | undefined;
-  falsy: '' | 0 | false | null | undefined;
-};
-
-type InferDefaultOrOptionalValue<TParam extends ParamSchema> =
-  TParam['default'] extends { options: infer D }
-    ? D
-    : TParam['optional'] extends true
-    ? undefined
-    : TParam['optional'] extends { options: { nullable: true } }
-    ? null | undefined
-    : TParam['optional'] extends { options: { checkFalsy: true } }
-    ? '' | 0 | false | null | undefined
-    : TParam['optional'] extends { options: { values: infer V } }
-    ? V extends undefined
-      ? undefined
-      : V extends keyof OptionalValueMap
-      ? OptionalValueMap[V]
-      : never
-    : undefined;
-
-type InferDefaultOrOptional<TParam extends ParamSchema> =
-  | InferParam<Omit<TParam, DefaultOrOptionalKeys>>
-  | InferDefaultOrOptionalValue<TParam>;
+type InferArray<TParam extends ParamSchema> = InferParam<
+  Omit<TParam, ArrayKeys>
+> extends infer TInfer
+  ? TypeOrUnknown<TInfer>[]
+  : never;
 
 type InferCustomSanitizer<TParam extends ParamSchema> = TParam extends {
   customSanitizer: {
@@ -103,7 +67,7 @@ type InferCustomSanitizer<TParam extends ParamSchema> = TParam extends {
 
 type InferCustom<TParam extends ParamSchema> = TParam extends {
   custom: {
-    options: 
+    options:
       | ((arg0: any, ...args: any) => asserts arg0 is infer T)
       | ((arg0: any, ...args: any) => arg0 is infer T);
   };
@@ -119,10 +83,8 @@ type InferIsIn<TParam extends ParamSchema> = TParam extends {
 
 type InferParam<TParam extends ParamSchema> = HasKey<
   TParam,
-  DefaultOrOptionalKeys
+  'customSanitizer'
 > extends true
-  ? InferDefaultOrOptional<TParam>
-  : HasKey<TParam, 'customSanitizer'> extends true
   ? InferCustomSanitizer<TParam>
   : HasKey<TParam, 'custom'> extends true
   ? InferCustom<TParam>
@@ -136,56 +98,35 @@ type InferParam<TParam extends ParamSchema> = HasKey<
   ? InferValidator<TParam>
   : never;
 
-/**
- * is this necessary?
- */
-type IntersectArray<T> = ExtractArrayType<T> extends object
-  ? Array<UnionToIntersection<IntersectRecursive<ExtractArrayType<T>>>>
-  : Array<UnionToIntersection<ExtractArrayType<T>>>;
-
-/**
- * @todo Refactor this to better handle the intersection of objects and Dates
- */
-type IntersectRecursive<T> = T extends Date | Date[]
-  ? T
-  : {
-      [K in keyof T]: T[K] extends Date | Date[]
-        ? T[K]
-        : T[K] extends Array<unknown>
-        ? IntersectRecursive<IntersectArray<T[K]>>
-        : T[K] extends object
-        ? UnionToIntersection<IntersectRecursive<T[K]>>
-        : T[K];
-    } extends infer A
+type Intersect<A, B> = [A] extends [never]
+  ? B
+  : [B] extends [never]
   ? A
-  : never;
+  : A extends (infer ArrayTypeA)[]
+  ? B extends (infer ArrayTypeB)[]
+    ? (ArrayTypeA & ArrayTypeB)[]
+    : A & B
+  : A & B;
 
-/**
- * @todo Refactor this
- */
-type SchemaMember<
-  TSchema extends Schema,
-  K extends keyof TSchema
-> = K extends `${string}.${infer B}`
-  ? B extends '*'
-    ? InferParam<TSchema[K]>[]
-    : B extends `*.${infer C}`
-    ? Array<InferSchema<{ [key in C]: TSchema[K] }>>
-    : InferSchema<{ [key in B]: TSchema[K] }>
-  : InferParam<TSchema[K]>;
-
-/**
- * @todo Refactor this to find a better way to infer the schema
- */
-type InferSchema<TSchema extends Schema> = {
-  [K in keyof TSchema as K extends `${infer A}.${string}`
-    ? A
-    : K]: SchemaMember<TSchema, K>;
+type SchemaMember<TSchema extends SchemaTree> = {
+  [K in keyof TSchema]:
+    | Intersect<
+        TSchema[K] extends { __param: infer TParam }
+          ? InferParam<TParam>
+          : never,
+        TSchema[K] extends { __shape: infer TShape }
+          ? InferSchema<TShape>
+          : never
+      >
+    | (TSchema[K] extends { __fallbackValue: infer TFallback }
+        ? TFallback
+        : never);
 };
 
-/**
- * @todo Refactor this so we can have object as optional
- */
-export type Infer<TSchema extends Schema> = Prettify<
-  IntersectRecursive<InferSchema<TSchema>>
+type InferSchema<TSchema extends SchemaTree> = keyof TSchema extends '*'
+  ? Array<SchemaMember<TSchema>[keyof TSchema]>
+  : SchemaMember<TSchema>;
+
+export type Infer<TSchema extends Schema> = InferSchema<
+  MakeSchemaTree<TSchema>
 >;

@@ -1,5 +1,5 @@
-import type { Schema } from 'express-validator';
 import { describe, it, expectTypeOf } from 'vitest';
+import type { Schema } from 'express-validator';
 import type { Infer } from '../src/infer';
 
 describe('Infer', () => {
@@ -26,8 +26,10 @@ describe('Infer', () => {
       },
     } satisfies Schema;
 
-    expectTypeOf({} as Infer<typeof schema>).toEqualTypeOf<{
-      array: Array<unknown>;
+    const inferredSchemaType = {} as Infer<typeof schema>;
+
+    expectTypeOf(inferredSchemaType).toEqualTypeOf<{
+      array: unknown[];
       int: number;
       float: number;
       boolean: boolean;
@@ -85,41 +87,45 @@ describe('Infer', () => {
       },
       customPredicateSingleArg: {
         custom: {
-          options: (value: unknown): value is string => typeof value === 'string',
+          options: (value: unknown): value is string =>
+            typeof value === 'string',
         },
       },
       customPredicateMultiArg: {
         custom: {
-          options: (value: unknown, _meta): value is string => typeof value === 'string',
+          options: (value: unknown, _meta): value is string =>
+            typeof value === 'string',
         },
       },
       customNoInference: {
         custom: {
           options: () => {},
-        }
-      }
+        },
+      },
     } satisfies Schema;
 
-    expectTypeOf({} as Infer<typeof schema>).toEqualTypeOf<{
-      string: string | string[];
-      int: number | number[];
-      float: number | number[];
-      boolean: boolean | boolean[];
-      date: Date | Date[];
-      ULID: string | string[];
-      alpha: string | string[];
-      alphanumeric: string | string[];
-      ascii: string | string[];
-      base32: string | string[];
-      base58: string | string[];
-      base64: string | string[];
-      btcAddress: string | string[];
-      creditCard: string | string[];
-      currency: string | string[];
-      email: string | string[];
-      ISO6346: string | string[];
-      ISO4217: string | string[];
-      ISO8601: string | string[];
+    const inferredSchemaType = {} as Infer<typeof schema>;
+
+    expectTypeOf(inferredSchemaType).toEqualTypeOf<{
+      string: string;
+      int: number;
+      float: number;
+      boolean: boolean;
+      date: Date;
+      ULID: string;
+      alpha: string;
+      alphanumeric: string;
+      ascii: string;
+      base32: string;
+      base58: string;
+      base64: string;
+      btcAddress: string;
+      creditCard: string;
+      currency: string;
+      email: string;
+      ISO6346: string;
+      ISO4217: string;
+      ISO8601: string;
       object: {};
       customAssertsSingleArg: string;
       customAssertsMultiArg: string;
@@ -137,11 +143,13 @@ describe('Infer', () => {
       toArrayString: { toArray: true, isString: true },
     } satisfies Schema;
 
-    expectTypeOf({} as Infer<typeof schema>).toEqualTypeOf<{
-      isArray: Array<unknown>;
-      toArray: Array<unknown>;
-      isArrayString: Array<string>;
-      toArrayString: Array<string>;
+    const inferredSchemaType = {} as Infer<typeof schema>;
+
+    expectTypeOf(inferredSchemaType).toEqualTypeOf<{
+      isArray: unknown[];
+      toArray: unknown[];
+      isArrayString: string[];
+      toArrayString: string[];
     }>({} as any);
   });
 
@@ -206,6 +214,9 @@ describe('Infer', () => {
           options: {},
         },
       },
+      onlyOptional: {
+        optional: true,
+      },
       onlyDefault: {
         default: { options: 1 as const },
       },
@@ -215,7 +226,9 @@ describe('Infer', () => {
       },
     } satisfies Schema;
 
-    expectTypeOf({} as Infer<typeof schema>).toEqualTypeOf<{
+    const inferredSchemaType = {} as Infer<typeof schema>;
+
+    expectTypeOf(inferredSchemaType).toEqualTypeOf<{
       optionalTrue: number | undefined;
       optionalValueUndefined: number | undefined;
       optionalValueUndefinedString: number | undefined;
@@ -225,6 +238,7 @@ describe('Infer', () => {
       optionalCheckFalsy: number | '' | 0 | false | null | undefined;
       optionalEmptyObject: number | undefined;
       optionalEmptyOptions: number | undefined;
+      onlyOptional: undefined;
       onlyDefault: 1;
       defaultWithOptional: 1;
     }>({} as any);
@@ -235,69 +249,88 @@ describe('Infer', () => {
       isIn: { isIn: { options: [['a', 'b', 'c'] as const] } },
     } satisfies Schema;
 
-    expectTypeOf({} as Infer<typeof schema>).toEqualTypeOf<{
+    const inferredSchemaType = {} as Infer<typeof schema>;
+
+    expectTypeOf(inferredSchemaType).toEqualTypeOf<{
       isIn: 'a' | 'b' | 'c';
     }>({} as any);
   });
 
   it('should infer object shape correctly', () => {
     const schema = {
-      'user.name.first': {
-        isString: true,
-        trim: true,
-      },
-      'user.name.middle': {
-        isString: true,
-        trim: true,
-        optional: true,
-      },
-      'user.name.last': {
-        isString: true,
-        trim: true,
-      },
-      'user.name.nicknames': {
-        isArray: true,
-        isString: true,
-        optional: true,
-      },
+      'keyInferredStringArray.*': { isString: true },
 
-      'split.names.*.first': {
-        isString: true,
-        trim: true,
-      },
-      'split.names.*.middle': {
-        isString: true,
-        optional: true,
-        trim: true,
-      },
-      'split.names.*.last': {
-        isString: true,
-        trim: true,
-      },
-      'split.names.*.nicknames': {
+      stringArrayDefined: { isArray: true },
+      'stringArrayDefined.*': { isString: true },
+
+      optionalStringArray: { optional: true },
+      'optionalStringArray.*': { isString: true },
+
+      optionalStringArrayDefined: { isArray: true, optional: true },
+      'optionalStringArrayDefined.*': { isString: true },
+
+      'keyInferredObject.a': { isString: true },
+      'keyInferredObject.b': { isInt: true },
+
+      'keyInferredArray.*.a': { isString: true },
+      'keyInferredArray.*.b': { isInt: true },
+
+      objectDefined: { isObject: true },
+      'objectDefined.a': { isString: true },
+      'objectDefined.b': { isInt: true },
+
+      optionalObjectDefined: { isObject: true, optional: true },
+      'optionalObjectDefined.a': { isString: true },
+      'optionalObjectDefined.b': { isInt: true },
+
+      arrayDefined: { isArray: true },
+      'arrayDefined.*.a': { isString: true },
+      'arrayDefined.*.b': { isInt: true },
+
+      optionalArrayDefined: { isArray: true, optional: true },
+      'optionalArrayDefined.*.a': { isString: true },
+      'optionalArrayDefined.*.b': { isInt: true },
+
+      objectArrayDefined: { isObject: true, isArray: true },
+      'objectArrayDefined.*.a': { isString: true },
+      'objectArrayDefined.*.b': { isInt: true },
+
+      optionalObjectArrayDefined: {
+        isObject: true,
         isArray: true,
-        isString: true,
         optional: true,
       },
+      'optionalObjectArrayDefined.*.a': { isString: true },
+      'optionalObjectArrayDefined.*.b': { isInt: true },
+
+      'deep.nested.object.a': { isString: true },
+      'deep.nested.object.b': { isInt: true },
+      'deep.nested.object.c': { isString: true, isArray: true },
+      'deep.nested.array.*.a': { isString: true },
+      'deep.nested.array.*.b': { isInt: true },
+      'deep.nested.array.*.c': { isString: true, isArray: true },
     } satisfies Schema;
 
-    expectTypeOf({} as Infer<typeof schema>).toEqualTypeOf<{
-      user: {
-        name: {
-          first: string;
-          middle: string | undefined;
-          last: string;
-          nicknames: string[] | undefined;
-        };
-      };
+    const inferredSchemaType = {} as Infer<typeof schema>;
 
-      split: {
-        names: {
-          first: string;
-          middle: string | undefined;
-          last: string;
-          nicknames: string[] | undefined;
-        }[];
+    expectTypeOf(inferredSchemaType).toEqualTypeOf<{
+      keyInferredStringArray: string[];
+      stringArrayDefined: string[];
+      optionalStringArray: string[] | undefined;
+      optionalStringArrayDefined: string[] | undefined;
+      keyInferredObject: { a: string; b: number };
+      keyInferredArray: { a: string; b: number }[];
+      objectDefined: { a: string; b: number };
+      optionalObjectDefined: { a: string; b: number } | undefined;
+      arrayDefined: { a: string; b: number }[];
+      optionalArrayDefined: { a: string; b: number }[] | undefined;
+      objectArrayDefined: { a: string; b: number }[];
+      optionalObjectArrayDefined: { a: string; b: number }[] | undefined;
+      deep: {
+        nested: {
+          object: { a: string; b: number; c: string[] };
+          array: { a: string; b: number; c: string[] }[];
+        };
       };
     }>({} as any);
   });
