@@ -17,6 +17,10 @@ describe('Infer', () => {
       upperCase: { toUpperCase: true },
       escape: { escape: true },
       unescape: { unescape: true },
+      blacklist: { blacklist: true },
+      whitelist: { whitelist: true },
+      normalizeEmail: { normalizeEmail: true },
+      stripLow: { stripLow: true },
       customSanitizer: {
         customSanitizer: {
           options: () => {
@@ -41,6 +45,10 @@ describe('Infer', () => {
       upperCase: string;
       escape: string;
       unescape: string;
+      blacklist: string;
+      whitelist: string;
+      normalizeEmail: string;
+      stripLow: string;
       customSanitizer: { any: 'type' };
     }>({} as any);
   });

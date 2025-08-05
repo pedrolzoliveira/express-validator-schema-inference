@@ -2,7 +2,6 @@ import type { Schema, ParamSchema } from 'express-validator';
 import type { MakeSchemaTree, SchemaTree } from './tree';
 import type { TypeOrUnknown, HasKey, PrettifyRecursive } from './utils';
 
-/** @todo Add missing Sanitizers `blacklist`, `whitelist`, `normalizeEmail` */
 type SanitizersMap = {
   toBoolean: boolean;
   toDate: Date;
@@ -15,6 +14,10 @@ type SanitizersMap = {
   toUpperCase: string;
   escape: string;
   unescape: string;
+  blacklist: string;
+  whitelist: string;
+  normalizeEmail: string;
+  stripLow: string;
 };
 
 type InferSanitizer<TParam extends ParamSchema> = {
