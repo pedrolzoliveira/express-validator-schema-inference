@@ -75,6 +75,51 @@ describe('Infer', () => {
       ISO4217: { isISO4217: true },
       ISO8601: { isISO8601: true },
       object: { isObject: true },
+      notEmpty: { notEmpty: true },
+      isEmpty: { isEmpty: true },
+      numeric: { isNumeric: true },
+      json: { isJSON: true },
+      url: { isURL: true },
+      uuid: { isUUID: true },
+      mobilePhone: { isMobilePhone: true },
+      length: { isLength: true },
+      contains: { contains: true },
+      equals: { equals: true },
+      matches: { matches: true },
+      ip: { isIP: true },
+      hexadecimal: { isHexadecimal: true },
+      mongoId: { isMongoId: true },
+      md5: { isMD5: true },
+      decimal: { isDecimal: true },
+      ethereumAddress: { isEthereumAddress: true },
+      fqdn: { isFQDN: true },
+      hash: { isHash: true },
+      hexColor: { isHexColor: true },
+      iban: { isIBAN: true },
+      isbn: { isISBN: true },
+      issn: { isISSN: true },
+      isin: { isISIN: true },
+      jwt: { isJWT: true },
+      latLong: { isLatLong: true },
+      locale: { isLocale: true },
+      lowercase: { isLowercase: true },
+      mimeType: { isMimeType: true },
+      passportNumber: { isPassportNumber: true },
+      port: { isPort: true },
+      postalCode: { isPostalCode: true },
+      rfc3339: { isRFC3339: true },
+      semVer: { isSemVer: true },
+      slug: { isSlug: true },
+      uppercase: { isUppercase: true },
+      dataURI: { isDataURI: true },
+      magnetURI: { isMagnetURI: true },
+      mailtoURI: { isMailtoURI: true },
+      macAddress: { isMACAddress: true },
+      octal: { isOctal: true },
+      rgbColor: { isRgbColor: true },
+      time: { isTime: true },
+      vat: { isVAT: true },
+      whitelisted: { isWhitelisted: true },
       customAssertsSingleArg: {
         custom: {
           options: (value: unknown): asserts value is string => {
@@ -135,6 +180,51 @@ describe('Infer', () => {
       ISO4217: string;
       ISO8601: string;
       object: {};
+      notEmpty: string;
+      isEmpty: string;
+      numeric: string;
+      json: string;
+      url: string;
+      uuid: string;
+      mobilePhone: string;
+      length: string;
+      contains: string;
+      equals: string;
+      matches: string;
+      ip: string;
+      hexadecimal: string;
+      mongoId: string;
+      md5: string;
+      decimal: string;
+      ethereumAddress: string;
+      fqdn: string;
+      hash: string;
+      hexColor: string;
+      iban: string;
+      isbn: string;
+      issn: string;
+      isin: string;
+      jwt: string;
+      latLong: string;
+      locale: string;
+      lowercase: string;
+      mimeType: string;
+      passportNumber: string;
+      port: string;
+      postalCode: string;
+      rfc3339: string;
+      semVer: string;
+      slug: string;
+      uppercase: string;
+      dataURI: string;
+      magnetURI: string;
+      mailtoURI: string;
+      macAddress: string;
+      octal: string;
+      rgbColor: string;
+      time: string;
+      vat: string;
+      whitelisted: string;
       customAssertsSingleArg: string;
       customAssertsMultiArg: string;
       customPredicateSingleArg: string;
