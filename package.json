@@ -2,7 +2,10 @@
   "name": "express-validator-schema-inference",
   "version": "0.0.1",
   "description": "type helper to infer express-validator's schema type",
-  "main": "index.js",
+  "types": "src/index.d.ts",
+  "files": [
+    "src"
+  ],
   "scripts": {
     "test": "vitest --typecheck"
   },
@@ -18,5 +21,8 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.4",
     "vitest": "^3.1.2"
+  },
+  "peerDependencies": {
+    "express-validator": "^7.0.0"
   }
 }
