@@ -26,10 +26,10 @@ type InferSanitizer<TParam extends ParamSchema> = {
 
 /** @todo Add missing validators, take a look at `node_modules/express-validator/lib/chain/validators.d.ts` */
 type ValidatorsMap = {
-  isBoolean: boolean;
+  isBoolean: boolean | 1 | 0 | 'true' | 'false' | '1' | '0';
   isDate: Date;
-  isFloat: number;
-  isInt: number;
+  isFloat: number | string;
+  isInt: number | string;
   isString: string;
   isULID: string;
   isAlpha: string;

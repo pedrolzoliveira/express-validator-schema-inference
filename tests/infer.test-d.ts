@@ -116,9 +116,9 @@ describe('Infer', () => {
 
     expectTypeOf(inferredSchemaType).toEqualTypeOf<{
       string: string;
-      int: number;
-      float: number;
-      boolean: boolean;
+      int: number | string;
+      float: number | string;
+      boolean: boolean | 1 | 0 | 'true' | 'false' | '1' | '0';
       date: Date;
       ULID: string;
       alpha: string;
@@ -326,18 +326,18 @@ describe('Infer', () => {
       stringArrayDefined: string[];
       optionalStringArray: string[] | undefined;
       optionalStringArrayDefined: string[] | undefined;
-      keyInferredObject: { a: string; b: number };
-      keyInferredArray: { a: string; b: number }[];
-      objectDefined: { a: string; b: number };
-      optionalObjectDefined: { a: string; b: number } | undefined;
-      arrayDefined: { a: string; b: number }[];
-      optionalArrayDefined: { a: string; b: number }[] | undefined;
-      objectArrayDefined: { a: string; b: number }[];
-      optionalObjectArrayDefined: { a: string; b: number }[] | undefined;
+      keyInferredObject: { a: string; b: number | string };
+      keyInferredArray: { a: string; b: number | string }[];
+      objectDefined: { a: string; b: number | string };
+      optionalObjectDefined: { a: string; b: number | string } | undefined;
+      arrayDefined: { a: string; b: number | string }[];
+      optionalArrayDefined: { a: string; b: number | string }[] | undefined;
+      objectArrayDefined: { a: string; b: number | string }[];
+      optionalObjectArrayDefined: { a: string; b: number | string }[] | undefined;
       deep: {
         nested: {
-          object: { a: string; b: number; c: string[] };
-          array: { a: string; b: number; c: string[] }[];
+          object: { a: string; b: number | string; c: string[] };
+          array: { a: string; b: number | string; c: string[] }[];
         };
       };
     }>({} as any);
