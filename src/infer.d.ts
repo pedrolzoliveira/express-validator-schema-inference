@@ -1,6 +1,6 @@
 import type { Schema, ParamSchema } from 'express-validator';
 import type { MakeSchemaTree, SchemaTree } from './tree';
-import type { TypeOrUnknown, HasKey, PrettifyRecursive } from './utils';
+import type { TypeOrUnknown, HasKey } from './utils';
 
 type SanitizersMap = {
   toBoolean: boolean;

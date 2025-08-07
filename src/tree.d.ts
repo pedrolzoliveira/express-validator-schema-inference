@@ -26,7 +26,6 @@ type InferDefaultOrOptionalValue<TParam extends ParamSchema> =
       : never
     : undefined;
 
-
 export type SchemaTree = {
   [key: string]: {
     __param?: ParamSchema;
