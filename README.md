@@ -1,5 +1,3 @@
-type helper to infer express-validator's schema type
-
 # express-validator-schema-inference
 
 TypeScript type helper to infer the resulting data type from an [express-validator](https://express-validator.github.io/docs/) schema.
@@ -108,8 +106,6 @@ The following express-validator schema options are currently supported for type 
 - `customSanitizer` (supports custom sanitizers with return type inference)
 
 Other options may be partially supported if they do not affect the output type. See Limitations below for unsupported or advanced features.
-- Handles optional fields and union types (e.g., enums, nullable fields).
-- Designed for use with TypeScript and type inference in controllers/middleware.
 
 ## Limitations
 
