@@ -24,7 +24,6 @@ type InferSanitizer<TParam extends ParamSchema> = {
   [K in keyof TParam]: K extends keyof SanitizersMap ? SanitizersMap[K] : never;
 }[keyof TParam];
 
-/** @todo Add missing validators, take a look at `node_modules/express-validator/lib/chain/validators.d.ts` */
 type ValidatorsMap = {
   isBoolean: boolean | 1 | 0 | 'true' | 'false' | '1' | '0';
   isDate: Date;
