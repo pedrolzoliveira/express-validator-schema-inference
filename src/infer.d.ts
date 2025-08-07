@@ -24,7 +24,6 @@ type InferSanitizer<TParam extends ParamSchema> = {
   [K in keyof TParam]: K extends keyof SanitizersMap ? SanitizersMap[K] : never;
 }[keyof TParam];
 
-/** @todo Add missing validators, take a look at `node_modules/express-validator/lib/chain/validators.d.ts` */
 type ValidatorsMap = {
   isBoolean: boolean | 1 | 0 | 'true' | 'false' | '1' | '0';
   isDate: Date;
@@ -46,6 +45,51 @@ type ValidatorsMap = {
   isISO4217: string;
   isISO8601: string;
   isObject: {};
+  notEmpty: string;
+  isEmpty: string;
+  isNumeric: string;
+  isJSON: string;
+  isURL: string;
+  isUUID: string;
+  isMobilePhone: string;
+  isLength: string;
+  contains: string;
+  equals: string;
+  matches: string;
+  isIP: string;
+  isHexadecimal: string;
+  isMongoId: string;
+  isMD5: string;
+  isDecimal: string;
+  isEthereumAddress: string;
+  isFQDN: string;
+  isHash: string;
+  isHexColor: string;
+  isIBAN: string;
+  isISBN: string;
+  isISSN: string;
+  isISIN: string;
+  isJWT: string;
+  isLatLong: string;
+  isLocale: string;
+  isLowercase: string;
+  isMimeType: string;
+  isPassportNumber: string;
+  isPort: string;
+  isPostalCode: string;
+  isRFC3339: string;
+  isSemVer: string;
+  isSlug: string;
+  isUppercase: string;
+  isDataURI: string;
+  isMagnetURI: string;
+  isMailtoURI: string;
+  isMACAddress: string;
+  isOctal: string;
+  isRgbColor: string;
+  isTime: string;
+  isVAT: string;
+  isWhitelisted: string;
 };
 
 type InferValidator<TParam extends ParamSchema> = {
