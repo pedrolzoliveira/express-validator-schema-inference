@@ -134,7 +134,7 @@ function makeController<T extends Schema>(
   schema: T,
   handler: (req: Request & { data: Infer<T> }, res: Response) => any
 ) {
-  // You should implement makeController to make req.data the return value of matchedData
+  // You should implement makeController so that req.data is set to the return value of matchedData.
 }
 
 makeController(
