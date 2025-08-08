@@ -16,6 +16,14 @@
   ],
   "author": "Pedro Oliveira",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedrolzoliveira/express-validator-schema-inference.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pedrolzoliveira/express-validator-schema-inference/issues"
+  },
+  "homepage": "https://github.com/pedrolzoliveira/express-validator-schema-inference#readme",
   "devDependencies": {
     "express-validator": "^7.2.1",
     "typescript": "^5.8.3",
