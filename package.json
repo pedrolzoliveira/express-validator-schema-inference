@@ -1,6 +1,6 @@
 {
   "name": "express-validator-schema-inference",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "type helper to infer express-validator's schema type",
   "types": "src/index.d.ts",
   "files": [
